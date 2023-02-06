@@ -18,3 +18,27 @@ async def signin(username):
 
 async def signup(user):
     return await users.insert_one(user)
+
+async def fetch_one_todo(title):
+    document = await todos.find_one({"title":title})
+    return document
+
+async def fetch_all_todos():
+    todos = []
+    cursor = todos.find({})
+    async for document in cursor:
+        todos.append(Todo(**document))
+    return todos
+
+async def fetch_user_todos(username):
+    return await todos.find({"username":username})
+
+async def create_todo(todo):
+    return await todos.insert_one(todo)
+
+async def update_todo(title, desc):
+    return await todos.update_one({"title":title},{"$set":{"description":desc}})
+
+async def remove_todo(title):
+    await todos.delete_one({"title":title})
+    return True
