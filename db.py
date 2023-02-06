@@ -7,14 +7,14 @@ db = client.Todo
 todos = db.todo
 users = db.user
 
-async def login(username):
+async def signin(username):
     user = await users.find_one({"username":username})
 
     if user:
         password = user["password"]
         return [username,password]
 
-    return "User does not exist!"
+    return False
 
 async def signup(user):
     return await users.insert_one(user)
