@@ -41,5 +41,8 @@ async def login(user: OAuth2PasswordRequestForm=Depends()):
                 }
             token = jwt.encode(token,SECRET_KEY,ALGORITHM)
             return {"token":token}
+        else:
+            raise HTTPException(status_code=400, detail="Incorrect password.")
+            
     else:
-        raise HTTPException(status_code=400, detail="Incorrect credentials.")
+        raise HTTPException(status_code=400, detail="Invalid username.")
