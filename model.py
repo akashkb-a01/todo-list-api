@@ -1,8 +1,10 @@
-class Todo():
+from pydantic import BaseModel, EmailStr
+
+class Todo(BaseModel):
     title: str
     content: str
-    
-class User():
+
+class User(BaseModel):
     username: str 
-    email: str
+    email: EmailStr
     password: str
