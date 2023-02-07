@@ -93,8 +93,8 @@ async def post_todo(todo:Todo):
 
 
 @app.put("/api/todo{title}/",dependencies=[Depends(oauth2_scheme)],response_model=Todo)
-async def put_todo(title:str,desc:str):
-    response = await update_todo(title, desc)
+async def put_todo(title:str,cont:str):
+    response = await update_todo(title, cont)
     if response:
         return response
     raise HTTPException(404, f"There is no Todo item with this title {title}")

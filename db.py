@@ -40,8 +40,8 @@ async def fetch_user_todos(username):
 async def create_todo(todo):
     return await todos.insert_one(todo)
 
-async def update_todo(title, desc):
-    return await todos.update_one({"title":title},{"$set":{"description":desc}})
+async def update_todo(title, cont):
+    return await todos.update_one({"title":title},{"$set":{"content":cont}})
 
 async def remove_todo(title):
     await todos.delete_one({"title":title})
