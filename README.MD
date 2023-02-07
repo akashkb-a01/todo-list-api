@@ -17,7 +17,7 @@ The User class consists of the following fields
 2. email  
 3. password 
 
-The Todo class consists of the fllowing fields  
+The Todo class consists of the following fields  
 1. username
 2. id
 3. title
