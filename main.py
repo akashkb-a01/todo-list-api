@@ -18,7 +18,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
-    return jwt.decode(token,SECRET_KEY,ALGORITHM)
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    username: str = payload.get("sub")
+    return username
+
 
 # Routes
 @app.get("/")
@@ -41,33 +44,32 @@ async def login(user: OAuth2PasswordRequestForm=Depends()):
     if response:
         if CryptContext(schemes=["bcrypt"]).verify(user.password,response[1]):
             token = {
-                "user":user.username,
+                "sub":user.username,
                 "exp":datetime.utcnow()+timedelta(hours=1)
                 }
             token = jwt.encode(token,SECRET_KEY,ALGORITHM)
-            return {"token":token}
+            return {"access_token": token, "token_type": "bearer"}
         else:
             raise HTTPException(status_code=400, detail="Incorrect password.")
             
     else:
         raise HTTPException(status_code=400, detail="Invalid username.")
 
-# @app.get("/api/todos")
-# async def user_todos(username: str = Depends(get_current_user)):
-#     # return await fetch_user_todos(username)
-#     return {"uname":username}
+@app.get("/api/todos")
+async def user_todos(username: User = Depends(get_current_user)):
+    return await fetch_user_todos(username)
 
-# @app.post("/api/create")
-# async def new_todo(title: str, content: str, username: str = Depends(get_current_user)):
-#     todo: Todo
-#     todo.title = title
-#     todo.content = content
-#     todo.username = username
-#     todo.id = str(uuid.uuid1())
-#     response = await create_todo(todo.dict())
-#     if response:
-#         return response
-#     raise HTTPException(status_code=400,detail="Could not create TODo")
+@app.post("/api/create")
+async def new_todo(title: str, content: str, username: str = Depends(get_current_user)):
+    todo: Todo
+    todo.title = title
+    todo.content = content
+    todo.username = username
+    todo.id = str(uuid.uuid1())
+    response = await create_todo(todo.dict())
+    if response:
+        return response
+    raise HTTPException(status_code=400,detail="Could not create TODo")
 
 @app.get("/api/todo")
 async def get_todo():

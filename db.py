@@ -24,14 +24,18 @@ async def fetch_one_todo(title):
     return document
 
 async def fetch_all_todos():
-    todos = []
+    todol = []
     cursor = todos.find({})
     async for document in cursor:
-        todos.append(Todo(**document))
-    return todos
+        todol.append(Todo(**document))
+    return todol
 
 async def fetch_user_todos(username):
-    return await todos.find({"username":username})
+    todol = []
+    cursor = todos.find({"username":username})
+    async for document in cursor:
+        todol.append(Todo(**document))
+    return todol
 
 async def create_todo(todo):
     return await todos.insert_one(todo)
